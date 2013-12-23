@@ -154,19 +154,24 @@ function dropbox_sync() {
       $folder_name = str_replace( "/", "", $folder_name );
       $category_id = wp_create_category($folder_name, $dbxCategory);
 
-      echo "<b>".$folder_name."</b><ul>";
+//      echo "<b>".$folder_name."</b><ul>";
 
       $files = $dbxClient->getMetadatawithChildren( $item[path] );
 
       foreach( $files[contents] as $file ) {
         if( $file[ is_dir ] != 1 ) {
-          $file_name = str_replace( $item[ path ]."/", "", $file[ path ] );
+//          $file_name = str_replace( $item[ path ]."/", "", $file[ path ] );
           $file_link = $dbxClient->createShareableLink( $file[ path ] );
           $file_thumbnail = $dbxClient->getThumbnail( $file[ path ], "jpeg", $options['dropbox-thumb-size'] );
           $file_thumbnail_b64 = base64_encode( $file_thumbnail[1] );
 
-          // create post in category...
-          echo "<li>".$file_name.": ".$file_link." - ".$file_thumbnail."</li>";
+          $file_path_info = pathinfo( $file[ path ] );
+
+          if( $options['dropbox-ext'] == 1 ) {
+            $file_name = $file_path_info[ 'basename' ];
+          } else {
+            $file_name = $file_path_info[ 'filename' ];
+          };
 
           $post_content = "<img src=\"data:image/jpeg;base64,".$file_thumbnail_b64."\" />";
 
@@ -178,20 +183,23 @@ function dropbox_sync() {
                     'post_category' => array( $category_id )
                   );
 
-           wp_insert_post( $post );
+           $existingPost = get_page_by_title( $file_name, 'object', 'post' );
 
+           if ( $existingPost == NULL ) {
+             wp_insert_post( $post );
+           };
         };
+
       };
-      echo "</ul><br /><br />";
     };
   };
+  echo "<script>location.href = '".admin_url( 'plugins.php?page=dropbox-settings' )."';</script>";
 };
 
 function dropbox_cleanup() {
 
   query_posts('category=dropbox');
   if ( have_posts() ) : while ( have_posts() ) : the_post();
-echo the_id();echo "<br />";
     wp_trash_post( the_id());
     endwhile;
     endif;
