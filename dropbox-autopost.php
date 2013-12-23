@@ -7,7 +7,7 @@
 
 /*
 Plugin Name: Dropbox Autopost
-Plugin URI: http://wordpress.org/plugins/dropbox_autopost
+Plugin URI: https://github.com/matiasinsaurralde/dropbox-autopost
 Description: This plugin allows you to post files/directories from your Dropbox.
 Author: Matias Insaurralde
 Version: 1.0
