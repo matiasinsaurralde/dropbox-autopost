@@ -98,7 +98,9 @@ function dropbox_access_token_callback() {
     echo "<input id='dropbox_access' name='dropbox-settings[dropbox-access-token]' size='40' type='text' value='{$options['dropbox-access-token']}' readonly='true' />";
   } else {
     if( isset( $options['app-key'] ) && isset( $options['app-secret'] ) &&  !empty( $options['app-key'] ) && !empty( $options['app-secret'] ) ) {
-      echo "<a href=\"" . admin_url( 'plugins.php?page=dropbox-settings&auth=true' ) . "\">Click here to enable Dropbox access.</a>";
+      echo "<p>Add the following redirect URL to your <a target=\"_blank\" href=\"https://www.dropbox.com/developers/apps/info/".$options['app-key']."\">Dropbox app settings</a>:</p>";
+      echo "<p><code>".admin_url('plugins.php?page=dropbox-settings&auth=true')."</code></p><br />";
+      echo "<p>Then <a href=\"" . admin_url( 'plugins.php?page=dropbox-settings&auth=true' ) . "\">click here to enable Dropbox access.</a></p>";
     } else {
       echo "Please set your application key/secret.";
     };
