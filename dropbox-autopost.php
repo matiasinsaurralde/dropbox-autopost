@@ -154,13 +154,11 @@ function dropbox_sync() {
       $folder_name = str_replace( "/", "", $folder_name );
       $category_id = wp_create_category($folder_name, $dbxCategory);
 
-//      echo "<b>".$folder_name."</b><ul>";
-
       $files = $dbxClient->getMetadatawithChildren( $item[path] );
 
       foreach( $files[contents] as $file ) {
         if( $file[ is_dir ] != 1 ) {
-//          $file_name = str_replace( $item[ path ]."/", "", $file[ path ] );
+
           $file_link = $dbxClient->createShareableLink( $file[ path ] );
           $file_thumbnail = $dbxClient->getThumbnail( $file[ path ], "jpeg", $options['dropbox-thumb-size'] );
           $file_thumbnail_b64 = base64_encode( $file_thumbnail[1] );
