@@ -176,7 +176,7 @@ function dropbox_sync() {
           $post_content = "<img src=\"data:image/jpeg;base64,".$file_thumbnail_b64."\" />";
 
           $post = array(
-                    'post_title'    => $file_name,
+                    'post_title'    => $folder_name,
                     'post_content'  => $post_content,
                     'post_status'   => 'publish',
                     'post_author'   => 1,
