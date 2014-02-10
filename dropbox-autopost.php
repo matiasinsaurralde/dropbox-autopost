@@ -158,7 +158,17 @@ function dropbox_sync() {
 
       $files = $dbxClient->getMetadatawithChildren( $item[path] );
 
-      foreach( $files[contents] as $file ) {
+      $post_content = 'hello.';
+      $post = array( 'post_title' => $folder_name, 'post_content' => $post_content,
+                     'post_status' => 'publish', 'post_author' => 1,
+                     'post_category' => array( $category_id ) );
+
+      $existingPost = get_page_by_title( $folder_name, 'object', 'post' );
+      if( $existingPost == NULL ) {
+        wp_insert_port( $post );
+      };
+
+/*      foreach( $files[contents] as $file ) {
         if( $file[ is_dir ] != 1 ) {
 
           $file_link = $dbxClient->createShareableLink( $file[ path ] );
@@ -190,10 +200,10 @@ function dropbox_sync() {
            };
         };
 
-      };
+      };*/
     };
   };
-  echo "<script>location.href = '".admin_url( 'plugins.php?page=dropbox-settings' )."';</script>";
+//  echo "<script>location.href = '".admin_url( 'plugins.php?page=dropbox-settings' )."';</script>";
 };
 
 function dropbox_cleanup() {
