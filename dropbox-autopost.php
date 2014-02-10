@@ -158,15 +158,37 @@ function dropbox_sync() {
 
       $files = $dbxClient->getMetadatawithChildren( $item[path] );
 
-      $post_content = 'hello.';
+      foreach( $files[ contents ] as $file ) {
+
+        echo "file: ".$file[ path ]."<br />";
+        echo "thumb_exists: ".$file[ thumb_exists ]."<br />";
+
+        if( $file[ thumb_exists ] == 1 ) {
+          // this is the image file
+          $file_link = $dbxClient->createShareableLink( $file[ path ] );
+          $file_thumbnail = $dbxClient->getThumbnail( $file[ path ], "jpeg", $options['dropbox-thumb-size'] );
+          $file_thumbnail_b64 = base64_encode( $file_thumbnail[1] );
+
+          $image_element = "<img src=\"data:image/jpeg;base64,".$file_thumbnail_b64."\" />";
+
+        } else {
+          // zip file!
+          $file_link = $dbxClient->createShareableLink( $file[ path ] );
+        };
+
+      };
+
+      $post_content = "<a href=\"".$file_link."\">".$image_element."</a>";
+
       $post = array( 'post_title' => $folder_name, 'post_content' => $post_content,
                      'post_status' => 'publish', 'post_author' => 1,
                      'post_category' => array( $category_id ) );
 
       $existingPost = get_page_by_title( $folder_name, 'object', 'post' );
       if( $existingPost == NULL ) {
-        wp_insert_port( $post );
+        wp_insert_post( $post );
       };
+
 
 /*      foreach( $files[contents] as $file ) {
         if( $file[ is_dir ] != 1 ) {
@@ -203,7 +225,7 @@ function dropbox_sync() {
       };*/
     };
   };
-//  echo "<script>location.href = '".admin_url( 'plugins.php?page=dropbox-settings' )."';</script>";
+  echo "<script>location.href = '".admin_url( 'plugins.php?page=dropbox-settings' )."';</script>";
 };
 
 function dropbox_cleanup() {
